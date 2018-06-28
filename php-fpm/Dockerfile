@@ -156,6 +156,22 @@ RUN if [ ${INSTALL_MONGO} = true ]; then \
     docker-php-ext-enable mongodb \
 ;fi
 
+
+###########################################################################
+# INSTALL_OLD_MONGO:
+###########################################################################
+
+USER root
+
+ARG INSTALL_OLD_MONGO=false
+
+RUN if [ ${INSTALL_OLD_MONGO} = true ]; then \
+    apt-get update && \
+    apt-get install nano && \
+    pecl install mongo && \
+    docker-php-ext-enable mongo \
+;fi
+
 ###########################################################################
 # AMQP:
 ###########################################################################
@@ -418,6 +434,7 @@ RUN if [ ${INSTALL_IMAGEMAGICK} = true ]; then \
     docker-php-ext-enable imagick \
 ;fi
 
+ 
 ###########################################################################
 # IMAP:
 ###########################################################################
