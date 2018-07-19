@@ -146,7 +146,6 @@ services:
       extra_hosts:
         - "dockerhost:${DOCKER_HOST_IP}"
         - "apicgfirst.test:${DOCKER_HOST_IP}"
-        - "biba.middleware.test/:${DOCKER_HOST_IP}"
       environment:
         - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
       depends_on:
@@ -237,15 +236,8 @@ services:
         - php-fpm
         - php-fpm5.6
       networks:
-        frontend:
-          aliases:
-            - biba.test
-            - biba.middleware.test
-        backend:
-          aliases:
-            - biba.test
-            - biba.middleware.test
-            - api.postcodes.io
+        - frontend
+        - backend
 
 ### Blackfire ########################################
     blackfire:

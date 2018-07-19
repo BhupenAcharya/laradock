@@ -406,7 +406,14 @@ RUN set -eux; if [ ${INSTALL_MSSQL} = true ]; then \
     && docker-php-ext-enable pdo_sqlsrv sqlsrv \
     && php -m | grep -q 'pdo_sqlsrv' \
     && php -m | grep -q 'sqlsrv' \
+    ## SQL SERVER : libmsodbcsql-13.1.so.9.2' : file not found Fix
+    && apt-get update \
+    && apt-get -y install wget \
+    && apt-get -y install dialog \
+    && wget http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u8_amd64.deb \
+    && dpkg -i libssl1.0.0_1.0.1t-1+deb8u8_amd64.deb \
 ;fi
+
 
 ###########################################################################
 # Image optimizers:
