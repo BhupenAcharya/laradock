@@ -241,6 +241,7 @@ services:
           aliases:
             - biba.test
             - biba.middleware.test
+            - api.postcodes.io
         backend:
           aliases:
             - biba.test
