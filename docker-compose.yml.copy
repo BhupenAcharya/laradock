@@ -24,7 +24,7 @@ volumes:
   mariadb:
     driver: ${VOLUMES_DRIVER}
   mongo:
-    driver: ${VOLUMES_DRIVER}
+    driver: ${VOLUMES_DRIVER}      
   minio:
     driver: ${VOLUMES_DRIVER}
   rethinkdb:
@@ -39,6 +39,7 @@ volumes:
     driver: ${VOLUMES_DRIVER}
   elasticsearch:
     driver: ${VOLUMES_DRIVER}
+  mongodata:
 
 services:
 
@@ -146,6 +147,8 @@ services:
       extra_hosts:
         - "dockerhost:${DOCKER_HOST_IP}"
         - "apicgfirst.test:${DOCKER_HOST_IP}"
+        - "biba.middleware.test/:${DOCKER_HOST_IP}"
+        - "ba.api.riskreduce.test/:${DOCKER_HOST_IP}"
       environment:
         - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
       depends_on:
@@ -193,6 +196,9 @@ services:
         - "9000"
       extra_hosts:
         - "dockerhost:${DOCKER_HOST_IP}"
+        - "apicgfirst.test:${DOCKER_HOST_IP}"
+        - "biba.middleware.test/:${DOCKER_HOST_IP}"
+        - "ba.api.riskreduce.test/:${DOCKER_HOST_IP}"
       environment:
         - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
       depends_on:
@@ -215,6 +221,7 @@ services:
       extra_hosts:
         - "dockerhost:${DOCKER_HOST_IP}"
         - "laravel.test:${DOCKER_HOST_IP}"
+        - "ba.api.riskreduce.test/:${DOCKER_HOST_IP}"
       networks:
         - backend
 
@@ -236,8 +243,18 @@ services:
         - php-fpm
         - php-fpm5.6
       networks:
-        - frontend
-        - backend
+        frontend:
+          aliases:
+            - biba.test
+            - biba.middleware.test
+            - api.postcodes.io
+            - ba.api.riskreduce.test
+        backend:
+          aliases:
+            - biba.test
+            - biba.middleware.test
+            - ba.api.riskreduce.test
+            - api.postcodes.io
 
 ### Blackfire ########################################
     blackfire:
@@ -410,14 +427,16 @@ services:
         - backend
 
 ### MongoDB ##############################################
-    mongo:
+    mongodb:
       build: ./mongo
-      ports:
-        - "${MONGODB_PORT}:27017"
+      environment:
+        - MONGO_DATA_DIR=/data/db
+        - MONGO_LOG_DIR=/data/db/mylog.log
       volumes:
-        - ${DATA_PATH_HOST}/mongo:/data/db
-      networks:
-        - backend
+        - ./mongo/db:/data/db
+      ports:
+          - 27017:27017
+      command: mongod --smallfiles --logpath=/data/db/mylog.log
 
 ### RethinkDB ##############################################
     rethinkdb:

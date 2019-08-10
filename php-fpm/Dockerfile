@@ -156,7 +156,6 @@ RUN if [ ${INSTALL_MONGO} = true ]; then \
     docker-php-ext-enable mongodb \
 ;fi
 
-
 ###########################################################################
 # INSTALL_OLD_MONGO:
 ###########################################################################
@@ -327,10 +326,11 @@ COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 # Mysqli Modifications:
 ###########################################################################
 
-ARG INSTALL_MYSQLI=false
+ARG INSTALL_MYSQLI=true
 
 RUN if [ ${INSTALL_MYSQLI} = true ]; then \
     docker-php-ext-install mysqli \
+    && docker-php-ext-install mysql \
 ;fi
 
 ###########################################################################
@@ -415,23 +415,43 @@ RUN set -eux; if [ ${INSTALL_MSSQL} = true ]; then \
 ;fi
 
 
+
+###########################################################################
+# WKHTMLTOPDF:
+###########################################################################
+
+ARG INSTALL_WKHTMLTOPDF=false
+
+RUN if [ ${INSTALL_WKHTMLTOPDF} = true ]; then \
+    # Install all dependencies
+    apt-get install -y \
+    libxrender1 \
+    libfontconfig1 \
+    libx11-dev \
+    libjpeg62 \
+    libxtst6 \
+    wget \
+    && wget https://github.com/h4cc/wkhtmltopdf-amd64/blob/master/bin/wkhtmltopdf-amd64?raw=true -O /usr/local/bin/wkhtmltopdf \
+;fi
+
+
 ###########################################################################
 # Image optimizers:
 ###########################################################################
 
 USER root
 
-ARG INSTALL_IMAGE_OPTIMIZERS=false
+#ARG INSTALL_IMAGE_OPTIMIZERS=false
 
-RUN if [ ${INSTALL_IMAGE_OPTIMIZERS} = true ]; then \
-    apt-get install -y --force-yes jpegoptim optipng pngquant gifsicle \
-;fi
+#RUN if [ ${INSTALL_IMAGE_OPTIMIZERS} = true ]; then \
+    # apt-get install -y --force-yes jpegoptim optipng pngquant gifsicle \
+#;fi
 
 ###########################################################################
 # ImageMagick:
 ###########################################################################
 
-USER root
+#USER root
 
 ARG INSTALL_IMAGEMAGICK=false
 

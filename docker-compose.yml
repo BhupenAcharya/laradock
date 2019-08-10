@@ -24,7 +24,7 @@ volumes:
   mariadb:
     driver: ${VOLUMES_DRIVER}
   mongo:
-    driver: ${VOLUMES_DRIVER}
+    driver: ${VOLUMES_DRIVER}      
   minio:
     driver: ${VOLUMES_DRIVER}
   rethinkdb:
@@ -39,6 +39,7 @@ volumes:
     driver: ${VOLUMES_DRIVER}
   elasticsearch:
     driver: ${VOLUMES_DRIVER}
+  mongodata:
 
 services:
 
@@ -147,6 +148,7 @@ services:
         - "dockerhost:${DOCKER_HOST_IP}"
         - "apicgfirst.test:${DOCKER_HOST_IP}"
         - "biba.middleware.test/:${DOCKER_HOST_IP}"
+        - "ba.api.riskreduce.test/:${DOCKER_HOST_IP}"
       environment:
         - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
       depends_on:
@@ -194,6 +196,9 @@ services:
         - "9000"
       extra_hosts:
         - "dockerhost:${DOCKER_HOST_IP}"
+        - "apicgfirst.test:${DOCKER_HOST_IP}"
+        - "biba.middleware.test/:${DOCKER_HOST_IP}"
+        - "ba.api.riskreduce.test/:${DOCKER_HOST_IP}"
       environment:
         - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
       depends_on:
@@ -216,6 +221,7 @@ services:
       extra_hosts:
         - "dockerhost:${DOCKER_HOST_IP}"
         - "laravel.test:${DOCKER_HOST_IP}"
+        - "ba.api.riskreduce.test/:${DOCKER_HOST_IP}"
       networks:
         - backend
 
@@ -242,10 +248,12 @@ services:
             - biba.test
             - biba.middleware.test
             - api.postcodes.io
+            - ba.api.riskreduce.test
         backend:
           aliases:
             - biba.test
             - biba.middleware.test
+            - ba.api.riskreduce.test
             - api.postcodes.io
 
 ### Blackfire ########################################
@@ -424,7 +432,7 @@ services:
       ports:
         - "${MONGODB_PORT}:27017"
       volumes:
-        - ${DATA_PATH_HOST}/mongo:/data/db
+        - /${USER}/${DATA_PATH_HOST}/mongo:/data/db
       networks:
         - backend
 
